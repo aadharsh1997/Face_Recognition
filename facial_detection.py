@@ -32,7 +32,7 @@ while True:
     # Display the results
     for top, right, bottom, left in face_locations:
         # Draw a box around the face
-        cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
+        cv2.rectangle(frame, (left, top), (right, bottom), (255, 255, 0), 2)
 
         #Get Face 
         face_img = frame[top:bottom, left:right].copy()
