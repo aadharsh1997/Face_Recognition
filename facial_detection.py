@@ -14,6 +14,10 @@ def rescale_frame(frame, percent=75):
 
 # Initialize variables
 face_locations = []
+MODEL_MEAN_VALUES = (78.4263377603, 87.7689143744, 114.895847746)
+gender_list = ['Male', 'Female']
+
+gender_net = cv2.dnn.readNetFromCaffe('A:\Aadharsh\Repo\Face_Recognition\deploy_gender.prototxt', 'A:\Aadharsh\Repo\Face_Recognition\gender_net.caffemodel')
 
 while True:
     # Grab a single frame of video
@@ -29,7 +33,20 @@ while True:
     for top, right, bottom, left in face_locations:
         # Draw a box around the face
         cv2.rectangle(frame, (left, top), (right, bottom), (0, 0, 255), 2)
-    
+
+        #Get Face 
+        face_img = frame[top:bottom, left:right].copy()
+        blob = cv2.dnn.blobFromImage(face_img, 1, (227, 227), MODEL_MEAN_VALUES, swapRB=False)
+
+        #Predict Gender
+        gender_net.setInput(blob)
+        gender_preds = gender_net.forward()
+        gender = gender_list[gender_preds[0].argmax()]
+        print("Gender : " + gender)
+
+        overlay_text = "%s" % (gender)
+        cv2.putText(frame, overlay_text, (left, top), 1, 1, (255, 255, 255), 2, cv2.LINE_AA)
+       
     #Rescaling function call
     frame150 = rescale_frame(frame, percent=150)
 
